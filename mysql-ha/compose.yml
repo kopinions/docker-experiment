@@ -1,0 +1,29 @@
+version: '2'
+services:
+  mysql:
+    image: tutum/mysql
+    environment:
+      MYSQL_PASS: "mysql"
+      MYSQL_USER: "mysql"
+      MYSQL_PASSWORD: "mysql"
+      ON_CREATE_DB: "stacks"
+      REPLICATION_MASTER: "true"
+      REPLICATION_PASS: "replica"
+      REPLICATION_USER: "replica"
+      EXTRA_OPTS: "--lower_case_table_names=1"
+    expose:
+     - 3306
+  back-db:
+    image: tutum/mysql
+    environment:
+      REPLICATION_SLAVE: "true"
+      REPLICATION_PASS: "replica"
+      REPLICATION_USER: "replica"
+      ON_CREATE_DB: "stacks"
+      MYSQL_PORT_3306_TCP_ADDR: 0.0.0.0
+      MYSQL_PORT_3306_TCP_PORT: 3306
+      EXTRA_OPTS: "--lower_case_table_names=1"
+    expose:
+      - 3307
+    links:
+      - mysql:mysql
